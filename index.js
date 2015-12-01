@@ -17,9 +17,9 @@ app.use(function(request, response, next) {
 });
 
 
-app.get('/', function(request, response) {
+app.get('/AddressBook', function(request, response) {
 
-    connection.query("SELECT * FROM Account", function(err, res) {
+    connection.query("SELECT name, id FROM AddressBook WHERE accountId = 1", function(err, res) {
         if (err) {
             response.send("Error");
         }
