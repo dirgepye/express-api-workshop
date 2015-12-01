@@ -11,8 +11,13 @@ var connection = db.createConnection({
 var app = express();
 app.use(bodyParser.json());
 
+app.use(function(request, response, next) {
+    request.accountId = 1;
+    next();
+});
 
-app.get('/hello', function(request, response) {
+
+app.get('/', function(request, response) {
 
     connection.query("SELECT * FROM Account", function(err, res) {
         if (err) {
@@ -22,15 +27,14 @@ app.get('/hello', function(request, response) {
             response.send(res);
         }
     });
-    connection.end();
+    //connection.end();
     //res.send("afewafwe");
 });
 
 
 
+
 // app.get('...
-
-
 
 
 var server = app.listen(process.env.PORT, process.env.IP, function() {
