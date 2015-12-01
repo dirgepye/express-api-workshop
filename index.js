@@ -16,6 +16,24 @@ app.use(function(request, response, next) {
     next();
 });
 
+app.post('/AddressBook', function(request, response) {
+    console.log(request.body);
+    if (request.body) {
+        connection.query('INSERT INTO AddressBook set name="' + request.body.name + '", accountId =' + request.accountId, function(err, res) {
+            if (err) {
+                response.send("error");
+            }
+            else {
+                response.send(res);
+            }
+        });
+    }
+    else {
+        response.sendStatus(404);
+    }
+});
+
+
 
 app.get('/AddressBook/:id', function(request, response) {
 
@@ -24,8 +42,8 @@ app.get('/AddressBook/:id', function(request, response) {
             response.send("Error");
             console.log(err);
         }
-        else if (res.length === 0 ) {
-             response.send("404 Not Authorized");
+        else if (res.length === 0) {
+            response.send("404 Not Authorized");
         }
         else {
             response.send(res);
