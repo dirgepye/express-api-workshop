@@ -17,11 +17,15 @@ app.use(function(request, response, next) {
 });
 
 
-app.get('/AddressBook', function(request, response) {
+app.get('/AddressBook/:id', function(request, response) {
 
-    connection.query("SELECT name, id FROM AddressBook WHERE accountId = 1", function(err, res) {
+    connection.query('SELECT * FROM AddressBook WHERE id =' + request.params.id + ' and accountId =' + request.accountId, function(err, res) {
         if (err) {
             response.send("Error");
+            console.log(err);
+        }
+        else if (res.length === 0 ) {
+             response.send("404 Not Authorized");
         }
         else {
             response.send(res);
