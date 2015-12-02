@@ -16,6 +16,34 @@ app.use(function(request, response, next) {
     next();
 });
 
+
+// Exercise 7
+
+app.post('/Entries', function(request, response) {
+    console.log(request.body);
+    if (request.body) {
+        connection.query('INSERT INTO Entry set firstName="' + request.body.firstName + '", lastName="' + request.body.lastName + '", birthday="' + request.body.birthday + '", addressbookId=' + request.accountId, function(err, res) {
+            console.log(err);
+            if (err) {
+                response.send(402);
+            }
+            else if (res.affectedRows === 0) {
+                response.sendStatus(404);
+            }
+            else {
+                response.json({
+                    id: res.insertId,
+                    firstName: request.body.firstName,
+                    lastName: request.body.lastName,
+                    birthday: request.body.birthday
+                });
+            }
+        });
+    }
+    else {
+        response.sendStatus(404);
+    }
+});
 // Exercise 6
 
 app.put('/AddressBook/:id', function(request, response) {
