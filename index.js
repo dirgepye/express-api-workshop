@@ -37,15 +37,16 @@ app.put('/AddressBook/:id', function (request, response) {
 app.delete('/AddressBook/:id', function(request, response) {
     if(request.body) {
         connection.query('DELETE FROM AddressBook WHERE id ="' + request.params.id + '" AND accountId =' + request.accountId, function(err,res) {
+            console.log(res);
             if (err) {
                 response.send("error");
             }
-            else if (request.params.id !== true) {
+            else if (res.affectedRows === 0) {
                 response.sendStatus(404);
             
             }
             else {
-                response.send(res);
+                response.json({success: true});
             }
         });
     }
@@ -62,7 +63,9 @@ app.post('/AddressBook', function(request, response) {
                 response.send("error");
             }
             else {
-                response.send(res);
+                response.json({id: res.insertId,
+                    name: request.body.name
+                });
             }
         });
     }
