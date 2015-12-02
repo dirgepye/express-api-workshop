@@ -18,16 +18,24 @@ app.use(function(request, response, next) {
 
 // Exercise 6
 
-app.put('/AddressBook/:id', function (request, response) {
-    if(request.body) {
-        connection.query('UPDATE AddressBook SET names ="' + request.body.name + '", accountId = ' + request.accountId, function (err, res) {
+app.put('/AddressBook/:id', function(request, response) {
+    if (request.body) {
+        connection.query('UPDATE AddressBook SET name ="' + request.body.name + '" where id = ' + request.params.id + " AND accountId = " + request.accountId, function(err, res) {
+            console.log(err);
             if (err) {
+                response.sendStatus(402);
+            }
+
+            else if (res.affectedRows === 0) {
                 response.sendStatus(404);
             }
             else {
-                response.send(res);
+                response.json({
+                    id: request.params.id,
+                    newName: request.body.name
+                });
             }
-        })
+        });
     }
 })
 
@@ -35,18 +43,20 @@ app.put('/AddressBook/:id', function (request, response) {
 // Exercise 5
 
 app.delete('/AddressBook/:id', function(request, response) {
-    if(request.body) {
-        connection.query('DELETE FROM AddressBook WHERE id ="' + request.params.id + '" AND accountId =' + request.accountId, function(err,res) {
+    if (request.body) {
+        connection.query('DELETE FROM AddressBook WHERE id ="' + request.params.id + '" AND accountId =' + request.accountId, function(err, res) {
             console.log(res);
             if (err) {
                 response.send("error");
             }
             else if (res.affectedRows === 0) {
                 response.sendStatus(404);
-            
+
             }
             else {
-                response.json({success: true});
+                response.json({
+                    success: true
+                });
             }
         });
     }
@@ -63,7 +73,8 @@ app.post('/AddressBook', function(request, response) {
                 response.send("error");
             }
             else {
-                response.json({id: res.insertId,
+                response.json({
+                    id: res.insertId,
                     name: request.body.name
                 });
             }
