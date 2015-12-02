@@ -16,6 +16,22 @@ app.use(function(request, response, next) {
     next();
 });
 
+// Exercise 6
+
+app.put('/AddressBook/:id', function (request, response) {
+    if(request.body) {
+        connection.query('UPDATE AddressBook SET names ="' + request.body.name + '", accountId = ' + request.accountId, function (err, res) {
+            if (err) {
+                response.sendStatus(404);
+            }
+            else {
+                response.send(res);
+            }
+        })
+    }
+})
+
+
 // Exercise 5
 
 app.delete('/AddressBook/:id', function(request, response) {
@@ -23,6 +39,10 @@ app.delete('/AddressBook/:id', function(request, response) {
         connection.query('DELETE FROM AddressBook WHERE id ="' + request.params.id + '" AND accountId =' + request.accountId, function(err,res) {
             if (err) {
                 response.send("error");
+            }
+            else if (request.params.id !== true) {
+                response.sendStatus(404);
+            
             }
             else {
                 response.send(res);
