@@ -1,6 +1,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 
+
+
 var db = require('mysql');
 var connection = db.createConnection({
     user: 'dirgepye',
@@ -15,6 +17,69 @@ app.use(function(request, response, next) {
     request.accountId = 1;
     next();
 });
+
+
+
+
+// Exercise 9 - Sign up
+
+
+app.post('/Accounts/signup', function(request, response) {
+    console.log(response.body);
+    var bCrypt = require('bcrypt-nodejs');
+    var salt1 = bCrypt.genSaltSync(10);
+    var hash = bCrypt.hashSync(request.body.password, salt1, null);
+
+    connection.query('INSERT INTO Account (email, password) VALUES ("' + request.body.email + '", "' + hash +'")', function(err, result) {
+        console.log(err);
+
+        console.log(request.body.password);
+        console.log(hash);
+        if (err) {
+            response.send(err)
+        }
+
+        else {
+            response.json({
+                success: true
+            });
+        }
+    });
+});
+
+
+
+
+
+// connection.query('SELECT * FROM Email JOIN Entry ON Email.entryId = Entry.id JOIN AddressBook ON Entry.addressbookId = AddressBook.id WHERE AddressBook.accountId = ' + request.accountId + ' AND Email.id = ' + request.params.id, function(err, result) {
+// //  response.json(row);
+// if (err) {
+//     response.sendStatus(402);
+// }
+// else if (result[0].accountId === request.accountId) {
+//     connection.query('INSERT INTO Email (entryId, type, address) VALUES ("' + request.body.entryId + '", "' + request.body.type + '", "' + request.body.address + '")', function(err, res) {
+//         // connection.query('INSERT INTO Email set type="' + request.body.type + '", address="' + request.body.address + '" FROM Entry JOIN Email ON Email.entryId = Entry.id WHERE Entry.addressbookI =' + request.accountId, function(err, res) {
+//         console.log(err);
+//         if (err) {
+//             response.send("errorrororo");
+//         }
+//         else if (res.affectedRows === 0) {
+//             response.sendStatus(404);
+//         }
+//         else {
+//             response.json({
+//                 id: res.insertId,
+//                 type: request.body.type,
+//                 address: request.body.address
+//             });
+//         }
+//     });
+
+// }
+
+// });
+
+
 
 
 // Exercise 8
@@ -131,11 +196,8 @@ app.post('/Phone', function(request, response) {
                         });
                     }
                 });
-
             }
-
         });
-
     }
 });
 
@@ -237,8 +299,8 @@ app.post('/Address', function(request, response) {
             }
 
             else /*(result[0].accountId === request.accountId) */ {
-                connection.query('INSERT INTO Address (entryId, type, line1, line2, city, state, zip, country) VALUES ("' + request.body.entryId + '", "' + request.body.type + '", "' + request.body.line1 + '", "' + request.body.line1 + '", "' + request.body.city + '", "' + request.body.state + '", "' + request.body.zip + '", "' + request.body.country + '")', function(err, res) {                 
-                    
+                connection.query('INSERT INTO Address (entryId, type, line1, line2, city, state, zip, country) VALUES ("' + request.body.entryId + '", "' + request.body.type + '", "' + request.body.line1 + '", "' + request.body.line1 + '", "' + request.body.city + '", "' + request.body.state + '", "' + request.body.zip + '", "' + request.body.country + '")', function(err, res) {
+
                     console.log(err);
                     if (err) {
                         response.send("errorrororo");
